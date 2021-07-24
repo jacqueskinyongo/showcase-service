@@ -2,15 +2,19 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: kaniko
+  labels:
+    app: kaniko-executor
 spec:
   containers:
-  - name: kaniko
-    image: gcr.io/kaniko-project/executor:debug
-    args: ["--context=git@github.com:jacqueskinyongo/showcase-service",
-            "--destination=enkly/showcase-service:1.0.0"]
-    volumeMounts:
-      - name: kaniko-secret
-        mountPath: /kaniko/.docker
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:debug
+      args:
+        - --dockerfile=Dockerfile
+        - --context=git@github.com/jacqueskinyongo/showcase-service.git
+        - --destination=enkly/showcase-service:1.0.0
+      volumeMounts:
+        - name: kaniko-secret
+          mountPath: /kaniko/.docker
   restartPolicy: Never
   volumes:
     - name: kaniko-secret
